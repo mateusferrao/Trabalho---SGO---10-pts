@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"import requests; print\\('requests OK'\\)\")",
+      "Bash(pip install *)",
+      "Bash(python gerar_imagens.py)",
+      "Bash(which python3 *)",
+      "Bash(python3 gerar_imagens.py)",
+      "Bash(\"/c/Users/MateusFerrãodaCosta/AppData/Local/Python/pythoncore-3.14-64/python.exe\" gerar_imagens.py)",
+      "Bash(cd \"/c/Users/MateusFerrãodaCosta/OneDrive - Hy Brazil Energia S.A/Área de Trabalho/PUC/Trabalho - SGO - 10 pts\" && find . -not -path './.git/*' | sort)"
+    ]
+  }
+}

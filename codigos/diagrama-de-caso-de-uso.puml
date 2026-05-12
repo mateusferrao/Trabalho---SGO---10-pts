@@ -1,0 +1,49 @@
+@startuml diagrama-de-caso-de-uso
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+skinparam usecase {
+  BackgroundColor LightYellow
+  BorderColor DarkOrange
+}
+
+actor "Administrador" as Admin #LightBlue
+actor "Atleta" as Atleta #LightGreen
+actor "Visitante" as Visitante #LightPink
+
+rectangle "Sistema de Gestão das Olimpíadas (SGO)" {
+  usecase "UC01\nCadastrar Competição" as UC01
+  usecase "UC02\nCadastrar Modalidade" as UC02
+  usecase "UC03\nCadastrar Local" as UC03
+  usecase "UC04\nAlocar Local à Competição" as UC04
+  usecase "UC05\nCadastrar Atleta" as UC05
+  usecase "UC06\nInscrever Atleta em Competição" as UC06
+  usecase "UC07\nRegistrar Resultado" as UC07
+  usecase "UC08\nGerar Relatório de Medalhas" as UC08
+  usecase "UC09\nVisualizar Competições" as UC09
+  usecase "UC10\nVisualizar Quadro de Medalhas" as UC10
+}
+
+Admin --> UC01
+Admin --> UC02
+Admin --> UC03
+Admin --> UC04
+Admin --> UC05
+Admin --> UC07
+Admin --> UC08
+
+Atleta --> UC06
+Atleta --> UC09
+
+Visitante --> UC09
+Visitante --> UC10
+
+UC01 ..> UC02 : <<include>>
+UC04 ..> UC01 : <<include>>
+UC04 ..> UC03 : <<include>>
+UC06 ..> UC05 : <<include>>
+UC07 ..> UC01 : <<include>>
+UC08 ..> UC07 : <<extend>>
+
+@enduml

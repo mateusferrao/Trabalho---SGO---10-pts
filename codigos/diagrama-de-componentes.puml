@@ -1,0 +1,72 @@
+@startuml diagrama-de-componentes
+
+skinparam componentStyle rectangle
+skinparam component {
+  BackgroundColor LightCyan
+  BorderColor SteelBlue
+}
+skinparam database {
+  BackgroundColor LightYellow
+  BorderColor DarkGoldenRod
+}
+
+package "Camada de Apresentação" {
+  [React SPA\n(Vite + TypeScript)] as SPA
+}
+
+package "Camada de API\n(Node.js / Express)" {
+  [API Gateway\n+ Router] as Gateway
+
+  component "Módulo de Competições" as ModComp {
+    [CompetitionController]
+    [CompetitionUseCase]
+  }
+
+  component "Módulo de Inscrições" as ModInsc {
+    [InscricaoController]
+    [InscricaoUseCase]
+  }
+
+  component "Módulo de Alocação" as ModAloc {
+    [AlocacaoController]
+    [AlocacaoUseCase]
+  }
+
+  component "Módulo de Resultados" as ModResult {
+    [ResultadoController]
+    [ResultadoUseCase]
+  }
+
+  component "Módulo de Relatórios" as ModRel {
+    [RelatorioController]
+    [MedalhaUseCase]
+  }
+
+  [TypeORM\n(Data Access Layer)] as ORM
+}
+
+database "PostgreSQL 15\n(sgo_db)" as DB {
+  [competicoes]
+  [atletas]
+  [locais]
+  [inscricoes]
+  [resultados]
+  [paises]
+}
+
+SPA --> Gateway : HTTP/REST (JSON)\nporta 3000
+Gateway --> ModComp
+Gateway --> ModInsc
+Gateway --> ModAloc
+Gateway --> ModResult
+Gateway --> ModRel
+
+ModComp --> ORM
+ModInsc --> ORM
+ModAloc --> ORM
+ModResult --> ORM
+ModRel --> ORM
+
+ORM --> DB : SQL\nTCP 5432
+
+@enduml

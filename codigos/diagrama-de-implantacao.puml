@@ -1,0 +1,59 @@
+@startuml diagrama-de-implantacao
+
+skinparam nodeStyle rectangle
+skinparam node {
+  BackgroundColor LightBlue
+  BorderColor Navy
+}
+skinparam database {
+  BackgroundColor LightYellow
+  BorderColor DarkGoldenRod
+}
+skinparam artifact {
+  BackgroundColor White
+  BorderColor Gray
+}
+
+node "Dispositivo do Usuário" as Client {
+  artifact "Web Browser\n(Chrome / Firefox / Safari)" as Browser
+}
+
+node "Servidor de Produção\n(Docker Host — Linux)" as DockerHost {
+
+  node "Container: nginx:alpine\n<<Docker>>\n:80 / :443" as Nginx {
+    artifact "React Build\n(HTML + JS + CSS estático)" as ReactBuild
+  }
+
+  node "Container: node:20-alpine\n<<Docker>>\n:3000" as NodeApp {
+    artifact "API REST\n(Express + TypeScript)" as API
+    artifact "TypeORM" as ORM
+  }
+
+  node "Container: postgres:15-alpine\n<<Docker>>\n:5432" as PGNode {
+    database "sgo_database\n(PostgreSQL 15)" as PGDB
+  }
+
+  node "Docker Volume\n(persistência)" as Volume {
+    artifact "pg_data/" as PGData
+  }
+
+}
+
+Browser --> Nginx : HTTPS :443
+Nginx --> NodeApp : HTTP :3000\n(proxy_pass)
+NodeApp --> PGNode : TCP :5432\n(SQL / TypeORM)
+PGNode ..> Volume : monta volume
+
+note right of DockerHost
+  docker-compose.yml
+  services:
+    nginx  → build: ./frontend
+    api    → build: ./backend
+    db     → image: postgres:15
+  networks:
+    sgo-network (bridge)
+  volumes:
+    pg_data
+end note
+
+@enduml

@@ -1,0 +1,92 @@
+@startuml diagrama-de-classes
+
+skinparam classAttributeIconSize 0
+skinparam classFontStyle bold
+skinparam class {
+  BackgroundColor LightYellow
+  BorderColor DarkGoldenRod
+  ArrowColor DarkSlateBlue
+}
+
+class Pais {
+  - id: Long
+  - nome: String
+  - sigla: String
+  - bandeira: String
+  + getNome(): String
+  + getSigla(): String
+}
+
+class Atleta {
+  - id: Long
+  - nome: String
+  - dataNascimento: Date
+  + inscrever(c: Competicao, p: Pais): Inscricao
+  + getInscricoes(): List<Inscricao>
+}
+
+class Modalidade {
+  - id: Long
+  - nome: String
+  - descricao: String
+  - tipo: String
+  + getNome(): String
+}
+
+class Local {
+  - id: Long
+  - nome: String
+  - capacidade: Integer
+  - endereco: String
+  - cidade: String
+  + estaDisponivel(data: Date, inicio: Time, fim: Time): Boolean
+}
+
+class Competicao {
+  - id: Long
+  - data: Date
+  - horarioInicio: Time
+  - horarioFim: Time
+  + alocarLocal(local: Local): void
+  + adicionarInscricao(i: Inscricao): void
+  + registrarResultado(r: Resultado): void
+}
+
+class Inscricao {
+  - id: Long
+  - dataInscricao: Date
+  + getPaisRepresentado(): Pais
+}
+
+class Resultado {
+  - id: Long
+  + getOuro(): Atleta
+  + getPrata(): Atleta
+  + getBronze(): Atleta
+}
+
+class RelatorioMedalhas {
+  + gerar(): List<MedalhasPorPais>
+}
+
+class MedalhasPorPais {
+  - ouro: Integer
+  - prata: Integer
+  - bronze: Integer
+  + getTotal(): Integer
+}
+
+Pais "1" <-- "0..*" Atleta : origem
+Atleta "1" --> "0..*" Inscricao : realiza
+Competicao "1" --> "0..*" Inscricao : recebe
+Competicao "0..*" --> "1" Local : alocada em
+Competicao "0..*" --> "1" Modalidade : pertence a
+Competicao "1" --> "0..1" Resultado : possui
+Inscricao "0..*" --> "1" Pais : representa
+Resultado --> Atleta : ouro
+Resultado --> Atleta : prata
+Resultado --> Atleta : bronze
+RelatorioMedalhas ..> MedalhasPorPais : cria
+MedalhasPorPais --> Pais : agrupa
+
+@enduml

@@ -1,0 +1,93 @@
+@startuml diagrama-de-pacotes
+
+skinparam packageStyle rectangle
+skinparam package {
+  BackgroundColor AliceBlue
+  BorderColor Navy
+}
+
+package "sgo-frontend\n<<React / TypeScript / Vite>>" as Frontend {
+  package "pages" {
+    [CompeticoesPage]
+    [AtletasPage]
+    [ResultadosPage]
+    [RelatoriosPage]
+  }
+  package "components" {
+    [CompetitionCard]
+    [AthleteForm]
+    [MedalTable]
+    [ResultForm]
+  }
+  package "services" {
+    [ApiService]
+    [CompetitionService]
+    [AthleteService]
+  }
+}
+
+package "sgo-backend\n<<Node.js / TypeScript / Express>>" as Backend {
+  package "controllers" {
+    [CompetitionController]
+    [AthleteController]
+    [LocalController]
+    [ResultController]
+    [ReportController]
+  }
+  package "use-cases" {
+    [CadastrarCompeticao]
+    [InscreverAtleta]
+    [AlocarLocal]
+    [RegistrarResultado]
+    [GerarRelatorio]
+  }
+  package "domain" {
+    package "entities" {
+      [Competicao]
+      [Atleta]
+      [Local]
+      [Resultado]
+      [Pais]
+      [Inscricao]
+    }
+    package "repositories\n(interfaces)" {
+      [ICompetitionRepo]
+      [IAthleteRepo]
+      [IResultRepo]
+    }
+    package "domain-services" {
+      [AlocacaoService]
+      [InscricaoService]
+      [MedalhaService]
+    }
+  }
+  package "infrastructure" {
+    package "repositories\n(impl)" {
+      [CompetitionRepoImpl]
+      [AthleteRepoImpl]
+      [ResultRepoImpl]
+    }
+    package "database" {
+      [TypeORMConfig]
+      [Migrations]
+    }
+  }
+}
+
+package "sgo-database\n<<PostgreSQL 15>>" as Database {
+  [competicoes]
+  [atletas]
+  [locais]
+  [inscricoes]
+  [resultados]
+  [paises]
+}
+
+Frontend ..> Backend : HTTP REST / JSON
+Backend ..> Database : SQL via TypeORM
+"use-cases" ..> "domain" : usa
+"controllers" ..> "use-cases" : invoca
+"infrastructure" ..> "domain" : implementa interfaces
+"use-cases" ..> "infrastructure" : acessa via interface
+
+@enduml
