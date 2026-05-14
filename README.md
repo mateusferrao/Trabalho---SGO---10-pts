@@ -2,7 +2,8 @@
 
 > **PUC Minas — Engenharia de Software — Projeto de Software**  
 > Professor: João Paulo Carneiro Aramuni  
-> Trabalho 1 — Primeira Entrega (10 pontos)
+> Trabalho 1 SGO
+> Grupo: Mateus Ferrão e Felipe Fontenelle
 
 ## Descrição
 
