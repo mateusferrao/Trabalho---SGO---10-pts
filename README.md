@@ -7,9 +7,14 @@
 
 ## Descrição
 
-Sistema para coordenar os aspectos das Olimpíadas: gerenciamento de competições, inscrições de atletas, alocação de locais e controle de resultados com quadro de medalhas por país.
+O **Sistema de Gestão das Olimpíadas (SGO)** tem como objetivo apoiar a organização e o acompanhamento das competições olímpicas, centralizando as informações necessárias para administrar modalidades, atletas, países, locais de prova, inscrições, resultados e relatórios de medalhas.
 
-**Stack conceitual:** Node.js · TypeScript · React · PostgreSQL · Docker
+Por meio do sistema, a organização do evento pode cadastrar competições informando modalidade, data, horário e local, além de controlar quais atletas estão inscritos em cada prova. O SGO também deve garantir que os locais sejam alocados sem conflitos de horário, impedindo que duas competições ocorram no mesmo espaço ao mesmo tempo.
+
+Os atletas podem participar de diferentes competições, desde que respeitem a regra de representar apenas um país em cada modalidade. Após a realização das provas, o sistema permite registrar os resultados oficiais, indicando os atletas classificados em primeiro, segundo e terceiro lugares. Com base nesses resultados, é possível gerar o quadro de medalhas, agrupando o desempenho dos países por medalhas de ouro, prata e bronze.
+
+Este repositório apresenta a **modelagem UML** do sistema, incluindo diagramas de caso de uso, classes, pacotes, componentes e implantação. O foco do trabalho é representar a estrutura, os comportamentos principais, as responsabilidades dos módulos e a distribuição conceitual da solução, sem implementação de código-fonte do sistema.
+
 
 ---
 
@@ -80,7 +85,7 @@ Mostra componentes consumidores e fornecedores por meio de interfaces requeridas
 
 Versão simplificada sem interfaces requeridas e fornecidas, mantendo dependências diretas entre os componentes para facilitar a leitura.
 
-> Observação: ao representar todas as interfaces requeridas e fornecidas no PlantUML, a renderização pode ficar muito poluída e desorganizada. Por isso, esta segunda opção também foi incluída como alternativa visual mais limpa.
+> Observação: ao representar todas as interfaces requeridas e fornecidas no PlantUML, a renderização fica muito poluída e desorganizada. Por isso, esta segunda opção também foi incluída como alternativa visual mais limpa.
 
 <img width="700px" src="imagens/diagrama-de-componentes-sem-requisições.png"/>
 
