@@ -54,19 +54,61 @@ database "PostgreSQL 15\n(sgo_db)" as DB {
   [paises]
 }
 
-SPA --> Gateway : HTTP/REST (JSON)\nporta 3000
-Gateway --> ModComp
-Gateway --> ModInsc
-Gateway --> ModAloc
-Gateway --> ModResult
-Gateway --> ModRel
+() "ISGO REST API" as ISgoRest
+() "ICompeticaoService" as ICompSvc
+() "IInscricaoService" as IInscSvc
+() "IAlocacaoService" as IAlocSvc
+() "IResultadoService" as IResultSvc
+() "IRelatorioService" as IRelSvc
 
-ModComp --> ORM
-ModInsc --> ORM
-ModAloc --> ORM
-ModResult --> ORM
-ModRel --> ORM
+() "ICompeticaoRepository" as ICompRepo
+() "IInscricaoRepository" as IInscRepo
+() "ILocalRepository" as ILocalRepo
+() "IResultadoRepository" as IResultRepo
+() "IPaisRepository" as IPaisRepo
+() "ISQLConnection" as ISql
 
-ORM --> DB : SQL\nTCP 5432
+Gateway -left- ISgoRest : fornece
+SPA ..> ISgoRest : requer\nHTTP/REST JSON
+
+ModComp -up- ICompSvc : fornece
+ModInsc -up- IInscSvc : fornece
+ModAloc -up- IAlocSvc : fornece
+ModResult -up- IResultSvc : fornece
+ModRel -up- IRelSvc : fornece
+
+Gateway ..> ICompSvc : requer
+Gateway ..> IInscSvc : requer
+Gateway ..> IAlocSvc : requer
+Gateway ..> IResultSvc : requer
+Gateway ..> IRelSvc : requer
+
+ORM -down- ICompRepo : fornece
+ORM -down- IInscRepo : fornece
+ORM -down- ILocalRepo : fornece
+ORM -down- IResultRepo : fornece
+ORM -down- IPaisRepo : fornece
+
+ModComp ..> ICompRepo : requer
+ModInsc ..> IInscRepo : requer
+ModInsc ..> IPaisRepo : requer
+ModAloc ..> ILocalRepo : requer
+ModAloc ..> ICompRepo : requer
+ModResult ..> IResultRepo : requer
+ModRel ..> IResultRepo : requer
+ModRel ..> IPaisRepo : requer
+
+DB -left- ISql : fornece
+ORM ..> ISql : requer\nSQL / TCP 5432
+
+note right of ISgoRest
+  Interface fornecida pelo backend
+  e requerida pela aplicação web.
+end note
+
+note bottom of ICompRepo
+  Interfaces de repositório desacoplam
+  regras de negócio da persistência.
+end note
 
 @enduml

@@ -21,6 +21,7 @@ class Atleta {
   - id: Long
   - nome: String
   - dataNascimento: Date
+  - documento: String
   + inscrever(c: Competicao, p: Pais): Inscricao
   + getInscricoes(): List<Inscricao>
 }
@@ -47,6 +48,7 @@ class Competicao {
   - data: Date
   - horarioInicio: Time
   - horarioFim: Time
+  - status: StatusCompeticao
   + alocarLocal(local: Local): void
   + adicionarInscricao(i: Inscricao): void
   + registrarResultado(r: Resultado): void
@@ -55,11 +57,13 @@ class Competicao {
 class Inscricao {
   - id: Long
   - dataInscricao: Date
+  - status: StatusInscricao
   + getPaisRepresentado(): Pais
 }
 
 class Resultado {
   - id: Long
+  - registradoEm: DateTime
   + getOuro(): Atleta
   + getPrata(): Atleta
   + getBronze(): Atleta
@@ -76,9 +80,22 @@ class MedalhasPorPais {
   + getTotal(): Integer
 }
 
+enum StatusCompeticao {
+  AGENDADA
+  EM_ANDAMENTO
+  FINALIZADA
+  CANCELADA
+}
+
+enum StatusInscricao {
+  PENDENTE
+  CONFIRMADA
+  CANCELADA
+}
+
 Pais "1" <-- "0..*" Atleta : origem
 Atleta "1" --> "0..*" Inscricao : realiza
-Competicao "1" --> "0..*" Inscricao : recebe
+Competicao "1" --> "0..*" Inscricao : recebe inscrições
 Competicao "0..*" --> "1" Local : alocada em
 Competicao "0..*" --> "1" Modalidade : pertence a
 Competicao "1" --> "0..1" Resultado : possui
@@ -88,5 +105,24 @@ Resultado --> Atleta : prata
 Resultado --> Atleta : bronze
 RelatorioMedalhas ..> MedalhasPorPais : cria
 MedalhasPorPais --> Pais : agrupa
+Competicao --> StatusCompeticao
+Inscricao --> StatusInscricao
+
+note right of Local
+  Regra: o mesmo local não pode
+  ter duas competições no mesmo
+  intervalo de data e horário.
+end note
+
+note right of Inscricao
+  Regra: para uma mesma modalidade,
+  um atleta só pode representar
+  um país.
+end note
+
+note right of Resultado
+  Ouro, prata e bronze devem ser
+  atletas inscritos na competição.
+end note
 
 @enduml

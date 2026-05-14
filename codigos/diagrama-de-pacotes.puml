@@ -7,67 +7,76 @@ skinparam package {
 }
 
 package "sgo-frontend\n<<React / TypeScript / Vite>>" as Frontend {
-  package "pages" {
+  package "pages" as FrontPages {
     [CompeticoesPage]
     [AtletasPage]
     [ResultadosPage]
     [RelatoriosPage]
   }
-  package "components" {
+  package "components" as FrontComponents {
     [CompetitionCard]
     [AthleteForm]
     [MedalTable]
     [ResultForm]
   }
-  package "services" {
+  package "services" as FrontServices {
     [ApiService]
     [CompetitionService]
     [AthleteService]
+    [ReportService]
   }
 }
 
 package "sgo-backend\n<<Node.js / TypeScript / Express>>" as Backend {
-  package "controllers" {
+  package "controllers" as Controllers {
     [CompetitionController]
     [AthleteController]
     [LocalController]
+    [RegistrationController]
     [ResultController]
     [ReportController]
   }
-  package "use-cases" {
+  package "use-cases" as UseCases {
     [CadastrarCompeticao]
     [InscreverAtleta]
     [AlocarLocal]
     [RegistrarResultado]
     [GerarRelatorio]
   }
-  package "domain" {
-    package "entities" {
+  package "domain" as Domain {
+    package "entities" as Entities {
       [Competicao]
       [Atleta]
       [Local]
       [Resultado]
       [Pais]
       [Inscricao]
+      [Modalidade]
     }
-    package "repositories\n(interfaces)" {
+    package "repositories\n(interfaces fornecidas ao domínio)" as RepositoryPorts {
       [ICompetitionRepo]
       [IAthleteRepo]
+      [ILocalRepo]
+      [IRegistrationRepo]
       [IResultRepo]
+      [IReportRepo]
     }
-    package "domain-services" {
+    package "domain-services" as DomainServices {
       [AlocacaoService]
       [InscricaoService]
       [MedalhaService]
     }
   }
-  package "infrastructure" {
-    package "repositories\n(impl)" {
+  package "infrastructure" as Infrastructure {
+    package "repositories\n(implementam interfaces)" as RepositoryAdapters {
       [CompetitionRepoImpl]
       [AthleteRepoImpl]
+      [LocalRepoImpl]
+      [RegistrationRepoImpl]
       [ResultRepoImpl]
+      [ReportRepoImpl]
     }
-    package "database" {
+    package "database" as DatabaseConfig {
       [TypeORMConfig]
       [Migrations]
     }
@@ -85,9 +94,13 @@ package "sgo-database\n<<PostgreSQL 15>>" as Database {
 
 Frontend ..> Backend : HTTP REST / JSON
 Backend ..> Database : SQL via TypeORM
-"use-cases" ..> "domain" : usa
-"controllers" ..> "use-cases" : invoca
-"infrastructure" ..> "domain" : implementa interfaces
-"use-cases" ..> "infrastructure" : acessa via interface
+FrontPages ..> FrontComponents : renderiza
+FrontPages ..> FrontServices : consome
+Controllers ..> UseCases : invoca
+UseCases ..> Domain : aplica regras
+DomainServices ..> Entities : valida invariantes
+UseCases ..> RepositoryPorts : requer interfaces
+RepositoryAdapters ..|> RepositoryPorts : fornece implementações
+RepositoryAdapters ..> DatabaseConfig : usa TypeORM
 
 @enduml

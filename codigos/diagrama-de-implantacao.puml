@@ -16,16 +16,19 @@ skinparam artifact {
 
 node "Dispositivo do Usuário" as Client {
   artifact "Web Browser\n(Chrome / Firefox / Safari)" as Browser
+  artifact "Perfil de acesso\n(Admin / Atleta / Visitante)" as UserProfile
 }
 
 node "Servidor de Produção\n(Docker Host — Linux)" as DockerHost {
 
   node "Container: nginx:alpine\n<<Docker>>\n:80 / :443" as Nginx {
     artifact "React Build\n(HTML + JS + CSS estático)" as ReactBuild
+    artifact "Nginx Reverse Proxy\nTLS + rota /api" as Proxy
   }
 
   node "Container: node:20-alpine\n<<Docker>>\n:3000" as NodeApp {
     artifact "API REST\n(Express + TypeScript)" as API
+    artifact "Módulos de Domínio\nCompetições / Inscrições /\nAlocação / Resultados / Relatórios" as DomainModules
     artifact "TypeORM" as ORM
   }
 
@@ -39,10 +42,13 @@ node "Servidor de Produção\n(Docker Host — Linux)" as DockerHost {
 
 }
 
+UserProfile ..> Browser : utiliza
 Browser --> Nginx : HTTPS :443
 Nginx --> NodeApp : HTTP :3000\n(proxy_pass)
 NodeApp --> PGNode : TCP :5432\n(SQL / TypeORM)
 PGNode ..> Volume : monta volume
+API ..> DomainModules : executa casos de uso
+DomainModules ..> ORM : usa repositórios
 
 note right of DockerHost
   docker-compose.yml

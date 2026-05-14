@@ -7,6 +7,7 @@ Requer: pip install requests
 import zlib
 import os
 import requests
+import urllib3
 
 def encode6bit(b):
     if b < 10:
@@ -53,6 +54,7 @@ DIAGRAMAS = [
     "diagrama-de-classes",
     "diagrama-de-pacotes",
     "diagrama-de-componentes",
+    "diagrama-de-componentes-sem-requisições",
     "diagrama-de-implantacao",
 ]
 
@@ -68,7 +70,11 @@ def main():
         encoded = encode_plantuml(conteudo)
         url = f"https://www.plantuml.com/plantuml/png/{encoded}"
         try:
-            r = requests.get(url, timeout=30)
+            try:
+                r = requests.get(url, timeout=30)
+            except requests.exceptions.SSLError:
+                urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+                r = requests.get(url, timeout=30, verify=False)
             if r.status_code == 200:
                 out_path = f"imagens/{nome}.png"
                 with open(out_path, "wb") as out:
