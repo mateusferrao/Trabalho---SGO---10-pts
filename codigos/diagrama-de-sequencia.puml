@@ -1,0 +1,95 @@
+@startuml diagrama-de-sequencia
+
+title Diagrama de Sequência - Inscrição, Alocação de Local e Registro de Resultados
+
+skinparam sequence {
+  ArrowColor DarkSlateBlue
+  ActorBorderColor DarkSlateBlue
+  LifeLineBorderColor DarkGoldenRod
+  LifeLineBackgroundColor LightYellow
+  ParticipantBackgroundColor LightYellow
+  ParticipantBorderColor DarkGoldenRod
+  BoxBackgroundColor HoneyDew
+  BoxBorderColor DarkSeaGreen
+}
+
+actor "Atleta" as Atleta #LightGreen
+actor "Administrador" as Admin #LightBlue
+
+participant "Interface do SGO" as UI
+participant "Sistema SGO" as Sistema
+control "Gerenciador de\nInscrições" as GInscricao
+control "Gerenciador de\nCompetições" as GCompeticao
+control "Gerenciador de\nLocais" as GLocal
+control "Gerenciador de\nResultados" as GResultado
+database "Banco de Dados" as BD
+
+== Inscrição de atleta em competição ==
+
+Atleta -> UI : Seleciona competição e país representado
+UI -> Sistema : solicitarInscricao(atleta, competicao, pais)
+Sistema -> GInscricao : validarInscricao(atleta, competicao, pais)
+GInscricao -> BD : consultarAtleta(atleta)
+BD --> GInscricao : dados do atleta
+GInscricao -> BD : consultarCompeticao(competicao)
+BD --> GInscricao : dados da competição
+GInscricao -> BD : verificarPaisPorModalidade(atleta, modalidade)
+BD --> GInscricao : situação da representação
+
+alt Regra atendida
+  GInscricao -> BD : salvarInscricao(atleta, competicao, pais)
+  BD --> GInscricao : inscrição registrada
+  GInscricao --> Sistema : confirmação da inscrição
+  Sistema --> UI : exibir confirmação
+  UI --> Atleta : Inscrição realizada com sucesso
+else Regra violada
+  GInscricao --> Sistema : informar impedimento
+  Sistema --> UI : exibir motivo da recusa
+  UI --> Atleta : Inscrição não realizada
+end
+
+== Alocação de local para competição ==
+
+Admin -> UI : Informa competição, local, data e horário
+UI -> Sistema : solicitarAlocacaoLocal(competicao, local, periodo)
+Sistema -> GLocal : verificarDisponibilidade(local, periodo)
+GLocal -> BD : consultarAgendaDoLocal(local, periodo)
+BD --> GLocal : agenda encontrada
+
+alt Local disponível
+  GLocal --> Sistema : disponibilidade confirmada
+  Sistema -> GCompeticao : alocarLocal(competicao, local, periodo)
+  GCompeticao -> BD : atualizarCompeticao(competicao, local, periodo)
+  BD --> GCompeticao : competição atualizada
+  GCompeticao --> Sistema : alocação concluída
+  Sistema --> UI : exibir confirmação
+  UI --> Admin : Local alocado com sucesso
+else Conflito de horário
+  GLocal --> Sistema : conflito identificado
+  Sistema --> UI : exibir conflito de agenda
+  UI --> Admin : Alocação recusada
+end
+
+== Registro de resultados ==
+
+Admin -> UI : Informa 1º, 2º e 3º colocados
+UI -> Sistema : solicitarRegistroResultado(competicao, ouro, prata, bronze)
+Sistema -> GResultado : validarResultado(competicao, ouro, prata, bronze)
+GResultado -> BD : consultarInscricoesDaCompeticao(competicao)
+BD --> GResultado : lista de inscritos
+
+alt Medalhistas inscritos na competição
+  GResultado -> BD : salvarResultado(competicao, ouro, prata, bronze)
+  BD --> GResultado : resultado registrado
+  GResultado -> BD : atualizarQuadroDeMedalhas()
+  BD --> GResultado : quadro atualizado
+  GResultado --> Sistema : registro concluído
+  Sistema --> UI : exibir confirmação
+  UI --> Admin : Resultado registrado com sucesso
+else Algum atleta não está inscrito
+  GResultado --> Sistema : resultado inválido
+  Sistema --> UI : exibir inconsistência
+  UI --> Admin : Registro recusado
+end
+
+@enduml

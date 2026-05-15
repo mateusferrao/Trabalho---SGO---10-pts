@@ -51,6 +51,7 @@ def encode_plantuml(text):
 
 DIAGRAMAS = [
     "diagrama-de-caso-de-uso",
+    "diagrama-de-sequencia",
     "diagrama-de-classes",
     "diagrama-de-pacotes",
     "diagrama-de-componentes",

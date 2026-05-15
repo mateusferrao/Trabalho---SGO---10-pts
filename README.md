@@ -32,6 +32,7 @@ Os atletas podem participar de diferentes competições, desde que respeitem a r
 O foco deste repositório é representar a estrutura, os comportamentos principais, as responsabilidades dos módulos e a distribuição conceitual da solução por meio dos seguintes diagramas:
 
 - Diagrama de Caso de Uso
+- Diagrama de Sequência
 - Diagrama de Classes
 - Diagrama de Pacotes
 - Diagrama de Componentes
@@ -112,6 +113,12 @@ Representa os principais atores do sistema e suas interações com as funcionali
 
 <img width="700px" src="imagens/diagrama-de-caso-de-uso.png"/>
 
+### Diagrama de Sequência
+
+Representa a ordem das mensagens trocadas entre os atores e o SGO nas funcionalidades de inscrição de atletas, alocação de locais e registro de resultados, evidenciando validações, persistência de dados e respostas de confirmação ou recusa.
+
+<img width="700px" src="imagens/diagrama-de-sequencia.png"/>
+
 ### Diagrama de Classes
 
 Representa a estrutura principal do domínio do sistema, incluindo classes como `Competicao`, `Atleta`, `Local`, `Resultado`, `Pais`, `Inscricao` e `Modalidade`, além de seus relacionamentos e restrições de negócio.
@@ -153,6 +160,7 @@ Os diagramas foram criados utilizando **PlantUML**. Os arquivos-fonte estão dis
 | Diagrama | Arquivo PlantUML | Imagem |
 |----------|------------------|--------|
 | Caso de Uso | `codigos/diagrama-de-caso-de-uso.puml` | `imagens/diagrama-de-caso-de-uso.png` |
+| Sequência | `codigos/diagrama-de-sequencia.puml` | `imagens/diagrama-de-sequencia.png` |
 | Classes | `codigos/diagrama-de-classes.puml` | `imagens/diagrama-de-classes.png` |
 | Pacotes | `codigos/diagrama-de-pacotes.puml` | `imagens/diagrama-de-pacotes.png` |
 | Componentes | `codigos/diagrama-de-componentes.puml` | `imagens/diagrama-de-componentes.png` |
@@ -175,6 +183,7 @@ sistema-gestao-olimpiadas/
 ├── gerar_imagens.py
 ├── imagens/
 │   ├── diagrama-de-caso-de-uso.png
+│   ├── diagrama-de-sequencia.png
 │   ├── diagrama-de-classes.png
 │   ├── diagrama-de-pacotes.png
 │   ├── diagrama-de-componentes.png
@@ -182,6 +191,7 @@ sistema-gestao-olimpiadas/
 │   └── diagrama-de-implantacao.png
 └── codigos/
     ├── diagrama-de-caso-de-uso.puml
+    ├── diagrama-de-sequencia.puml
     ├── diagrama-de-classes.puml
     ├── diagrama-de-pacotes.puml
     ├── diagrama-de-componentes.puml
