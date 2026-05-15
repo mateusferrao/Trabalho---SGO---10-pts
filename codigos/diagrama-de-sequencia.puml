@@ -13,6 +13,8 @@ skinparam sequence {
   BoxBorderColor DarkSeaGreen
 }
 
+autoactivate on
+
 actor "Atleta" as Atleta #LightGreen
 actor "Administrador" as Admin #LightBlue
 
